@@ -1,18 +1,40 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import SwipeCards, { type SwipeItem } from '../components/SwipeCards.vue'
 
 const router = useRouter()
 
-const profile = {
-  id: 'emerson',
-  name: 'Emerson',
-  age: 25,
-  height: '185cm',
-  image: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=1200&auto=format&fit=crop'
+const items: SwipeItem[] = [
+  {
+    id: 'emerson',
+    name: 'Emerson',
+    age: 25,
+    height: '185cm',
+    image: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=1200&auto=format&fit=crop'
+  },
+  {
+    id: 'alec',
+    name: 'Alec',
+    age: 24,
+    height: '182cm',
+    image: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=1200&auto=format&fit=crop'
+  },
+  {
+    id: 'nate',
+    name: 'Nate',
+    age: 26,
+    height: '188cm',
+    image: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=1200&auto=format&fit=crop'
+  }
+]
+
+function onChat(item: SwipeItem) {
+  router.push({ name: 'Chat', params: { id: item.id }, query: { name: item.name, image: item.image } })
 }
 
-function goChat() {
-  router.push({ name: 'Chat', params: { id: profile.id }, query: { name: profile.name, image: profile.image } })
+function onSwipe(payload: { item: SwipeItem; direction: 'left' | 'right' }) {
+  // 可在此上报滑动行为或预加载下一张
+  // console.log('swipe', payload.direction, payload.item.name)
 }
 </script>
 
@@ -25,22 +47,7 @@ function goChat() {
     </header>
 
     <section class="card-wrapper">
-      <div class="profile-card">
-        <img class="photo" :src="profile.image" :alt="profile.name" />
-
-        <div class="info">
-          <h2 class="name">{{ profile.name }}</h2>
-          <div class="meta">Age {{ profile.age }} · {{ profile.height }}</div>
-
-          <div class="tags">
-            <span class="tag">Puppy-Eyed</span>
-            <span class="tag">Possessive</span>
-            <span class="tag">One Night Stand</span>
-          </div>
-        </div>
-
-        <button class="chat-btn" @click="goChat">Chat!</button>
-      </div>
+      <SwipeCards :items="items" @chat="onChat" @swipe="onSwipe" />
     </section>
   </div>
 </template>
@@ -60,32 +67,7 @@ function goChat() {
   font-weight: 700;
 }
 .title { font-size: 18px; }
-.card-wrapper { padding: 16px; }
-.profile-card {
-  position: relative;
-  border-radius: 22px;
-  overflow: hidden;
-  background: #111;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-}
-.photo { width: 100%; height: auto; display: block; }
-.info {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
-  color: #fff;
-}
-.name { margin: 0 0 6px 0; }
-.meta { color: rgba(255,255,255,0.8); margin-bottom: 10px; }
-.tags { display: flex; gap: 8px; flex-wrap: wrap; }
-.tag {
-  font-size: 12px; padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,0.12);
-}
-.chat-btn {
-  position: absolute; right: 16px; bottom: 16px; padding: 10px 16px; border-radius: 14px;
-  border: none; background: linear-gradient(90deg,#6cffb6,#8ae6ff); color: #0b0b0c; font-weight: 700;
-}
+.card-wrapper { height: 70vh; }
 </style>
 
 
